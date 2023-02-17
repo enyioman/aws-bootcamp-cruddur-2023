@@ -28,11 +28,11 @@ For the reason of security and best practices, the root user should not be used 
 
 ![Root MFA](../_docs/assets/week0/usergroup.png)
 
-To secure this user, also enable MFA for the user.
+To secure this user, MFA was also enabled on it.
 
 ![Root MFA](../_docs/assets/week0/user-mfa.png)
 
 
 # App Architecture
 
-Lucidchart was used to illutrate the app and infrastructure architecture. This is the [link] (https://lucid.app/lucidchart/b20676bd-89b1-4ffa-a341-c9c269aef784/edit?viewport_loc=144%2C139%2C1579%2C867%2CZ2-xDaLVWdz9&invitationId=inv_06ff5e3b-1720-45a5-9413-434b1c83bff2) to the architecture.
+Lucidchart was used to illutrate the app and infrastructure architecture. This is the [link](https://lucid.app/lucidchart/b20676bd-89b1-4ffa-a341-c9c269aef784/edit?viewport_loc=144%2C139%2C1579%2C867%2CZ2-xDaLVWdz9&invitationId=inv_06ff5e3b-1720-45a5-9413-434b1c83bff2) to the architecture.
