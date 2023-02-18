@@ -73,3 +73,55 @@ gp env AWS_DEFAULT_REGION=us-east-1
 
 ![env vars](../_docs/assets/week0/aws-keys.png)
 
+4. Billing Alert was enabled through the root account. Also, the `IAM User and Role Access to Billing Information` was modified so that the user can have access to view costs and billing information.
+
+Next, billing alarm was created by first creating an SNS topic using AWS CLI and then the alarm using Cloudwatch.
+
+```
+aws sns create-topic --name billing-alarm
+```
+
+```
+aws sns subscribe \
+    --topic-arn TopicARN \
+    --protocol email \
+    --notification-endpoint your@email.com
+```
+
+```
+aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
+```
+
+![SNS Topic](../_docs/assets/week0/sns-topic.png)
+
+![Cloudwatch Alarm](../_docs/assets/week0/cw-alarm.png)
+
+
+5. In order not to exceed the free-tier limit, two budgets were created through AWS CLI and Console. 
+
+I exported my AWS Account ID and saved it as a variable with the following command: 
+
+```
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+```
+
+I updated the json files `budget.json` and `budget-notifications-with-subscribers.json` and then ran the below command:
+
+```
+aws budgets create-budget \
+    --account-id $AWS_ACCOUNT_ID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/budget-notifications-with-subscribers.json
+```
+
+![Budget CLI](../_docs/assets/week0/budget-cli.png)
+
+![AWS Budget](../_docs/assets/week0/budget.png)
+
+6. I set up AWS Service Control Policy (SCP). With AWS SCP, administrators can create policies that can be applied to multiple AWS accounts within an organization, helping to enforce consistent security and compliance requirements. SCPs can be used to limit access to specific AWS services, regions, or actions, and can be used to enforce policies such as enforcing the use of encryption, restricting access to sensitive data, or blocking certain actions that could lead to security issues.
+
+![SCP](../_docs/assets/week0/scp.png)
+
+7. Lastly, I played around with AWS Cloudshell which is a fully-managed browser-based shell environment provided by AWS. It allows users to easily access a pre-configured Linux environment within the AWS Management Console, without requiring them to install or maintain any software.
+
+![Cloudshell](../_docs/assets/week0/cloudshell.png)
