@@ -4,11 +4,13 @@ Welcome to my first journal for the AWS Cloud Project Free Bootcamp organized by
 
 ## App Architecture
 
+Lucidchart was used to illutrate the app conceptual, logical and infrastructural architecture. This is the [link](https://lucid.app/lucidchart/b20676bd-89b1-4ffa-a341-c9c269aef784/edit?viewport_loc=144%2C139%2C1579%2C867%2CZ2-xDaLVWdz9&invitationId=inv_06ff5e3b-1720-45a5-9413-434b1c83bff2) to the architecture. The challenge I had here was having limited number of icons I could use due to my free-tier account. I was able to streamline the architecture to arrive at something meaningful but minimal at the same time.
+
 ![Conceptual Architecture](../_docs/assets/week0/concept.png)
 
 ![Logical Architecture](../_docs/assets/week0/logic.png)
 
-Lucidchart was used to illutrate the app conceptual, logical and infrastructural architecture. This is the [link](https://lucid.app/lucidchart/b20676bd-89b1-4ffa-a341-c9c269aef784/edit?viewport_loc=144%2C139%2C1579%2C867%2CZ2-xDaLVWdz9&invitationId=inv_06ff5e3b-1720-45a5-9413-434b1c83bff2) to the architecture. The challenge I had here was having limited number of icons I could use due to my free-tier account. I was able to streamline the architecture to arrive at something meaningful but minimal at the same time.
+
 ## Setup
 
 For the bootcamp, participants were meant to setup some environments being tools for the projects.
