@@ -82,7 +82,7 @@ docker-compose up --build
 ![Docker compose](../_docs/assets/week1/docker-compose2.png)
 
 
-To validate access to the databases, we'll create and query some items into them.
+To validate access to the databases, we'll create table, put items into them and then query the items.
 
 ![DynamoDB Create table](../_docs/assets/week1/dynamodb-create-table.png)
 
