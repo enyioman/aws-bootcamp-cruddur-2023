@@ -67,3 +67,29 @@ CMD ["npm", "start"]
 ![Frontend running](../_docs/assets/week1/frontend-up.png)
 
 
+Note that I had to stop running the backend container before I could run the frontend. To run and orchestrate multiple containers, Docker Compose comes to the rescue.
+
+We'll use Docker compose to run the frontend, backend, DynamoDB, and Postgresql databases. To achieve this, create a file, `docker-compose.yml` in the root directory. The content of the file can be found [here](https://github.com/enyioman/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml).
+
+Run the command to build the images and run the containers if there are no errors in the YAML file.
+
+```
+docker-compose up --build
+```
+
+![Docker compose](../_docs/assets/week1/docker-compose.png)
+
+![Docker compose](../_docs/assets/week1/docker-compose2.png)
+
+
+To validate access to the databases, we'll create and query some items into them.
+
+![DynamoDB Create table](../_docs/assets/week1/dynamodb-create-table.png)
+
+![DynamoDB list table](../_docs/assets/week1/dynamodb-list-table.png)
+
+![DynamoDB put item](../_docs/assets/week1/dynamodb-put-item.png)
+
+![DynamoDB scan table](../_docs/assets/week1/dynamodb-scan-table.png)
+
+![Postgresql up](../_docs/assets/week1/postgres-up.png)
