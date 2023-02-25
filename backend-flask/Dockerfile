@@ -4,7 +4,9 @@ WORKDIR /backend-flask
 
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
-RUN apk --update --no-cache add curl
+RUN apt-get update 
+RUN apt-get install -y gcc
+RUN apt-get install -y curl
 COPY . .
 
 ENV FLASK_ENV=development
