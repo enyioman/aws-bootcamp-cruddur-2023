@@ -9,6 +9,7 @@ EXPOSE ${PORT}
 RUN npm ci --production
 
 FROM node:16.19-slim
+RUN apk --update --no-cache add curl
 COPY  --from=appbuild /frontend-react-js /frontend-react-js
 WORKDIR /frontend-react-js
 EXPOSE ${PORT}

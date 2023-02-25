@@ -8,7 +8,7 @@ services:
     ports:
       - "4567:4567"
     healthcheck:
-      test: curl --fail "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" || exit 1
+      test: curl --fail "https://localhost:4567/" || exit 1
       interval: 30s
       retries: 3
       start_period: 30s
@@ -22,7 +22,7 @@ services:
     ports:
       - "3000:3000"
     healthcheck:
-      test: curl --fail "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" || exit 1
+      test: curl --fail "https://localhost:3000/" || exit 1
       interval: 30s
       retries: 3
       start_period: 30s
