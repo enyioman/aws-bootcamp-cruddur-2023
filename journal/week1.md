@@ -224,7 +224,7 @@ RUN chmod +x backend.sh
 RUN ./backend.sh
 ```
 
-Then do same for the frontend: [commit]()
+Then do same for the frontend: [commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/024899bbecdd720cecdb883156bf5fbde7c9fbdc)
 
 `frontend.sh`
 
@@ -251,3 +251,168 @@ EXPOSE ${PORT}
 RUN chmod +x frontend.sh
 RUN ./frontend.sh
 ```
+
+## Use multi-stage building for a Dockerfile build
+
+A multi-stage Docker build is a Dockerfile construct that allows you to create an optimized Docker image with a small footprint by leveraging multiple stages in the build process.
+
+The idea behind a multi-stage build is to have multiple stages or phases in your Dockerfile, where each stage is responsible for a different aspect of the build process. Each stage can have its own set of instructions, dependencies, and tools.
+
+This strategy in addition to changing the base image reduced the frontend image size from 1.15GB to 24.4MB.
+### Frontend
+
+We'll update the frontend Dockerfile to the following: ([commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/75eb038e25f0274788727874800fba0b81b711a8))
+
+```
+FROM node:16.19-slim AS appbuild
+
+ENV PORT=3000
+ENV NODE_ENV=production
+
+RUN apt-get update 
+RUN apt-get install -y gcc
+RUN apt-get install -y curl
+
+COPY . /frontend-react-js
+WORKDIR /frontend-react-js
+EXPOSE ${PORT}
+RUN npm ci --production && npm run build
+
+FROM nginx:1.21.0-alpine as production
+
+COPY --from=appbuild /frontend-react-js/build /usr/share/nginx/html
+
+RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/confbackup.conf
+
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
+EXPOSE ${PORT}
+
+CMD ["nginx", "-g", "daemon off;"] 
+```
+
+Then serve the frontend using Nginx. Create a file `frontend-react/nginx/nginx.conf` with the below script:
+
+```
+server {
+
+  listen 3000 default_server;
+
+  location / {
+    root /usr/share/nginx/html/;
+    index index.html index.htm;
+    try_files $uri $uri/ /index.html;
+  }
+  error_page    500 502 503 504   /50x.html;
+
+  location = /50x.html {
+    root  /user/share/nginx/html;
+  }
+}
+```
+
+![Frontend multistage build](../_docs/assets/week1/frontend-multistage.png)
+
+## Push and tag an image to DockerHub
+
+Built images can be stored in repositories like Dockerhub for ease of sharing, collaboration, version control, ease of deployment, and/or automatic builds. We'll push our image to Dockerhub using the following steps:
+
+Login to Dockerhub
+
+![Dockerhub login](../_docs/assets/week1/docker-login.png)
+
+Tag the image with the below command:
+```
+docker tag cruddur-frontend:1.0.0 fynewily/cruddur-frontend:1.0
+```
+
+Then push the image using:
+
+```
+docker push fynewily/cruddur-frontend:1.0
+```
+
+![Frontend in dockerhub](../_docs/assets/week1/dockerhub-frontend.png)
+
+## Implement a healthcheck in the V3 Docker compose file
+
+Updated the `docker-compose.yml` file and added healthchecks for both the frontend and backend endpoints.
+
+`Backend`
+
+```
+backend-flask:
+    environment:
+      FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./backend-flask
+    ports:
+      - "4567:4567"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4567/api/activities/home"] 
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 20s
+```
+
+`Frontend`
+
+```
+frontend-react-js:
+    environment:
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./frontend-react-js
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/activities/home"] 
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 20s
+```
+
+
+![Healthcheck](../_docs/assets/week1/app-health.png)
+
+
+## Research best practices of Dockerfiles and attempt to implement it in your Dockerfile
+
+One of the best practices of Dockerfiles is the use of `.dockerignore` files which is used to specify which files and directories should be excluded from the Docker build context when building a Docker image. This is used to reduce the image size or prevent the inclusion of sensitive information in the docker image.
+
+`.dockerignore` files were created for both the frontend and backend application. [commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/a50ac8378f420624e682ea5bfbf58837490d7de7)
+
+
+## Learn how to install Docker on your localmachine and get the same containers running outside of Gitpod / Codespaces
+
+
+## Launch an EC2 instance that has docker installed, and pull a container to demonstrate you can run your own docker processes. 
+
+Spinned up an EC2 with Ubuntu 20.04 on AWS and installed NodeJs, Flask, Docker and Docker Compose with the following commands:
+
+```
+apt update -y
+apt upgrade -y
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+apt-get install -y nodejs
+apt install -y python3-pip
+apt install -y software-properties-common
+apt install -y python3-virtualenv
+apt install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable'
+apt-cache policy docker-ce
+apt install -y docker-ce
+curl -L 'https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)' -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+```
+
+
+Cloned the Cruddur application and got it running on the EC2.
+
+![Frontend on EC2](../_docs/assets/week1/ec2-frontend.png)
+
+![Backend on EC2](../_docs/assets/week1/ec2-backend.png)
+
+![Healthcheck EC2](../_docs/assets/week1/app-health-ec2.png)
