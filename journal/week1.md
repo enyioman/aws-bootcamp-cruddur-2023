@@ -67,6 +67,23 @@ CMD ["npm", "start"]
 
 ![Frontend running](../_docs/assets/week1/frontend-up.png)
 
+
+
+## Container Security Considerations
+
+The frontend and backend of the app was analyzed with Synk which pointed out some critical vulnerabilities in the Dockerfile. With the help of the tool a pull request was created to fix the vulnerabilities. [frontend commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/cbf25c3fa732bdd00999086bb54acdcfad8ea7ea)
+
+The below screenshots depict the status of the app before and after the fix.
+
+![Synk Analysis](../_docs/assets/week1/synk-frontend-before.png)
+
+![Synk Analysis](../_docs/assets/week1/synk-frontend-after.png)
+
+[**backend commit**](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/c8ba585b7ad4bac05b8049430a5a044c704df131)
+
+![Synk Analysis](../_docs/assets/week1/synk-backend-before.png)
+
+![Synk Analysis](../_docs/assets/week1/synk-backend-after.png)
 ## Document the Notification Endpoint for the OpenAI Document
 
 We'll use `/api/activities/notifications` as the notifications endpoint and then add it to `/backend-flask/openapi-3.0.yml`: [commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/069ffd47e6cbc106bea74ed8e597205bf5440e37)
