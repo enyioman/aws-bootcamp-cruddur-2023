@@ -194,3 +194,60 @@ To validate access to the databases, we'll create table, put items into them and
 
 # Homework Challenges
 
+## Run the dockerfile CMD as an external script
+
+For the backend app, we first create a file `backend-flask/backend.sh` and add the below scripts to it: [commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/32061e11f50faa7c9ef04f695e7c35b99a1fd2b7)
+
+```
+#!/bin/sh
+python3 -m flask run --host=0.0.0.0 --port=4567
+```
+
+Then modify the backend Dockerfile to the below:
+
+```
+FROM python:3.10-slim-buster 
+
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENV FLASK_ENV=developent
+
+EXPOSE ${PORT}
+#python3 -m flask run --host=.0.0.0.0 --port=4567
+#CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=4567"]
+RUN chmod +x backend.sh
+RUN ./backend.sh
+```
+
+Then do same for the frontend: [commit]()
+
+`frontend.sh`
+
+```
+#!/bin/sh
+npm start
+```
+
+`frontend-react/Dockerfile`
+
+```
+FROM node:16.18 
+
+WORKDIR /frontend-react-js
+
+ENV PORT=3000
+
+COPY . /frontend-react-js
+
+RUN npm install
+EXPOSE ${PORT}
+
+#CMD ["npm", "start"]
+RUN chmod +x frontend.sh
+RUN ./frontend.sh
+```
