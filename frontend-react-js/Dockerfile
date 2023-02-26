@@ -12,7 +12,7 @@ WORKDIR /frontend-react-js
 EXPOSE ${PORT}
 RUN npm ci --production && npm run build
 
-FROM nginx:1.21.0-alpine as production
+FROM nginx:1.23.3-alpine as production
 
 COPY --from=appbuild /frontend-react-js/build /usr/share/nginx/html
 
