@@ -393,6 +393,8 @@ frontend-react-js:
 
 ![Healthcheck](../_docs/assets/week1/app-health.png)
 
+After the healthcheck implementation, both endpoints were unhealthy. While troubleshooting, I found out I was not able to curl the endpoints from within and outside the container. The result of my research and collaborations showed that I needed to install curl into the container through the Dockerfile. The installation of curl solved the issue and the endpoints became healthy. [Installation commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/29a050cc5bafbd790a2d87cc4ac736f3b25b4e95)
+
 
 ## Research best practices of Dockerfiles and attempt to implement it in your Dockerfile
 
