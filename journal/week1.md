@@ -40,7 +40,25 @@ CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 ![Backend image](../_docs/assets/week1/backend-image.png)
 
 
-Run the container afterwards.
+## Containerize Application (Dockerfiles, Docker Compose)
+
+Run the container afterwards for the backend app based on the following Dockerfile:
+
+```
+FROM python:3.10-slim-buster
+
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENV FLASK_ENV=development
+
+EXPOSE ${PORT}
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
+```
 
 ![Backend container](../_docs/assets/week1/docker-run-backend.png)
 
@@ -66,6 +84,18 @@ CMD ["npm", "start"]
 
 ![Frontend running](../_docs/assets/week1/frontend-up.png)
 
+## Document the Notification Endpoint for the OpenAI Document
+## Write a Flask Backend Endpoint for Notifications.
+
+Next we work on the notification features for both the backend and frontend apps.
+
+![Backend notification](../_docs/assets/week1/backend-notification.png)
+
+## Write a React Page for Notifications
+
+![Frontend notification](../_docs/assets/week1/frontend-notification.png)
+
+## Run PostgreSQL and DynamoDB Local Container.
 
 Note that I had to stop running the backend container before I could run the frontend. To run and orchestrate multiple containers, Docker Compose comes to the rescue.
 
@@ -81,6 +111,7 @@ docker-compose up --build
 
 ![Docker compose](../_docs/assets/week1/docker-compose2.png)
 
+## Validating the DynamoDB and Postgresql Databases 
 
 To validate access to the databases, we'll create table, put items into them and then query the items.
 
@@ -93,3 +124,9 @@ To validate access to the databases, we'll create table, put items into them and
 ![DynamoDB scan table](../_docs/assets/week1/dynamodb-scan-table.png)
 
 ![Postgresql up](../_docs/assets/week1/postgres-up.png)
+
+
+
+
+# Homework Challenges
+
