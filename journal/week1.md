@@ -68,7 +68,41 @@ CMD ["npm", "start"]
 ![Frontend running](../_docs/assets/week1/frontend-up.png)
 
 
+## Create a docker-compose file to run multiple containers
 
+
+Note that I had to stop running the backend container before I could run the frontend. To run and orchestrate multiple containers, Docker Compose comes to the rescue.
+
+Create a file `docker-compose.yml` in the root directory (/aws-bootcamp-cruddur-2023/docker-compose.yml):
+
+```
+version: "3.8"
+services:
+  backend-flask:
+    environment:
+      FRONTEND_URL: "https://3000-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+      BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./backend-flask
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./backend-flask:/backend-flask
+  frontend-react-js:
+    environment:
+      REACT_APP_BACKEND_URL: "https://4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}"
+    build: ./frontend-react-js
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-react-js:/frontend-react-js
+
+# the name flag is a hack to change the default prepend folder
+# name when outputting the image names
+networks: 
+  internal-network:
+    driver: bridge
+    name: cruddur
+```
 ## Container Security Considerations
 
 The frontend and backend of the app was analyzed with Snyk which pointed out some critical vulnerabilities in the Dockerfile. With the help of the tool a pull request was created to fix the vulnerabilities. [frontend commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/cbf25c3fa732bdd00999086bb54acdcfad8ea7ea)
@@ -177,8 +211,6 @@ The **commit** can be found [here](https://github.com/enyioman/aws-bootcamp-crud
 ![Frontend notification](../_docs/assets/week1/notification-frontend.png)
 
 ## Run PostgreSQL and DynamoDB Local Container.
-
-Note that I had to stop running the backend container before I could run the frontend. To run and orchestrate multiple containers, Docker Compose comes to the rescue.
 
 We'll use Docker compose to run the frontend, backend, DynamoDB, and Postgresql databases. To achieve this, create a file, `docker-compose.yml` in the root directory. The content of the file can be found [here](https://github.com/enyioman/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml).
 
