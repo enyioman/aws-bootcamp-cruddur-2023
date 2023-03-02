@@ -32,8 +32,8 @@ from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter())
 provider.add_span_processor(processor)
-trace.set_tracer_provider(provider)
-tracer = trace.get_tracer(__name__)
+# trace.set_tracer_provider(provider)
+# tracer = trace.get_tracer(__name__)
 
 # XRAY Middleware ------------------
 xray_url = os.getenv("AWS_XRAY_URL")
