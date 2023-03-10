@@ -14,7 +14,6 @@ export default function SigninPage() {
 
   const onsubmit = async (event) => {
     setErrors('')
-    console.log('onsubmit')
     event.preventDefault();
     Auth.signIn(email, password)
       .then(user => {
