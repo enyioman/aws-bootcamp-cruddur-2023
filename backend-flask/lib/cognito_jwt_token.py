@@ -1,5 +1,3 @@
-HTTP_HEADER = "Authorization"
-
 import time
 import requests
 from jose import jwk, jwt
@@ -27,7 +25,6 @@ class CognitoJwtToken:
             self.request_client = request_client
         self._load_jwk_keys()
 
-    @classmethod
     def extract_access_token(request_headers):
         access_token = None
         auth_header = request_headers.get("Authorization")

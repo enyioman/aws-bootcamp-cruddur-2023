@@ -14,7 +14,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-from lib.cognito_token_verification import CognitoTokenVerification
+from lib.cognito_jwt_token.py import CognitoJwtToken
 
 
 # Honeycomb Initialization
@@ -172,17 +172,17 @@ def data_home():
   )
   access_token = CognitoJwtToken.extract_access_token(request.headers)
   try:
-    claims = cognito_jwt_token.token_service.verify(access_token)
-    self.claims = self.token_service.claims
-    g.cognito_claims = self.claims
+    claims = cognito_jwt_token.verify(access_token)
+    # authenticated request
+    app.logger.debug("authenticated")
+    app.logger.debug(claims)
+    # self.claims = self.token_service.claims
+    # g.cognito_claims = self.claims
   except TokenVerifyError as e:
-        _ = request.data
-        abort(make_response(jsonify(message=str(e)), 401))
-  
-  app.logger.debug('claims')
-  app.logger.debug(claims)
-
-  data = HomeActivities.run()
+    # unathenticated request
+    app.logger.debug(e)
+    app.logger.debug("unauthenticated")
+    data = HomeActivities.run()
   return data, 200
 
 @app.route("/api/activities/notifications", methods=['GET'])
