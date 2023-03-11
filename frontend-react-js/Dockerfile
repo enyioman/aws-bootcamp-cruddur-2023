@@ -1,4 +1,4 @@
-FROM node:16.19-slim
+FROM node:16-alpine3.16
 
 ENV PORT=3000
 
