@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
 import os
+import sys
 
 from services.home_activities import *
 from services.notifications_activities import *
@@ -14,7 +15,7 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
-from lib.cognito_jwt_token.py import CognitoJwtToken
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
 
 # Honeycomb Initialization
@@ -176,8 +177,8 @@ def data_home():
     # authenticated request
     app.logger.debug("authenticated")
     app.logger.debug(claims)
-    # self.claims = self.token_service.claims
-    # g.cognito_claims = self.claims
+    app.logger.debug(claims['username'])
+    data = HomeActivities.run(cognito_user_id=claims['username'])
   except TokenVerifyError as e:
     # unathenticated request
     app.logger.debug(e)
