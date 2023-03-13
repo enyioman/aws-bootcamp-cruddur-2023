@@ -1,5 +1,8 @@
 # Week 2 — Distributed Tracing
 
+- [x] [Go to Homework Challenge](#Homework-Challenge)
+
+
 This week we are working on distributed tracing for our Cruddur app. 
 
 Distributed tracing is a technique used to monitor and profile applications that are distributed across multiple services, processes, and systems. It provides a way to understand the flow of requests through a distributed system and helps to identify and diagnose performance issues.
