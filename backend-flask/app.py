@@ -171,7 +171,7 @@ def data_home():
   print(
     request.headers.get('Authorization')
   )
-  access_token = CognitoJwtToken.extract_access_token(request.headers)
+  access_token = extract_access_token(request.headers)
   try:
     claims = cognito_jwt_token.verify(access_token)
     # authenticated request
