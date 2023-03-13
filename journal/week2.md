@@ -334,4 +334,4 @@ We deliberately trigger an error by alterating some code then hit the endpoints 
 [Commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/3a064945d70db00c0291434015b4f559aa67cc3d)
 
 ![Custom span](../_docs/assets/week2/custom-span.png)
-Added Userid attribute
+Added `Userid` attribute
