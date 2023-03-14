@@ -277,6 +277,8 @@ We're using the above function to handle user authentication, using the `Auth` o
 
 ### Signup Page
 
+[Commit link](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/381e0213d115bdd3c0f905815aec55b9621229ce)
+
 We'll update our `SignupPage.js` with the following code:
 
 ```
@@ -343,6 +345,8 @@ Finally, the component is rendering a form with fields for name, email, username
 
 ### Confirmation Page
 
+[Commit link](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/381e0213d115bdd3c0f905815aec55b9621229ce)
+
 We'll update our `ConfirmationPage.js` with the following code:
 
 ```
@@ -382,6 +386,8 @@ The code defines two functions, `resend_code` and `onsubmit`, which are used in 
 
 
 ### Recovery Page
+
+[Commit link](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/381e0213d115bdd3c0f905815aec55b9621229ce)
 
 We'll update our `RecoveryPage.js` with the following code:
 
@@ -454,6 +460,8 @@ pip install -r requirements.txt
 ```
 
 ### Passing the JWT token along to the backend
+
+[Commit link](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/212316fbbc6db6f3b2f60fe4fa16f50747ee56bb)
 
 We added the following code to our `SigninPage.js`:
 
