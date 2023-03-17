@@ -29,9 +29,6 @@ class HomeActivities:
       LEFT JOIN public.users ON users.uuid = activities.user_uuid
       ORDER BY activities.created_at DESC
       """)
-      print(sql)
-      
-      return json[0]
       
       handle = results[0]['handle']
       span.set_attribute("app.user_id", handle)
