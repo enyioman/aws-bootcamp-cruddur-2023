@@ -30,7 +30,7 @@ class HomeActivities:
       ORDER BY activities.created_at DESC
       """)
       
-      handle = results[0]['handle']
-      span.set_attribute("app.user_id", handle)
-      span.set_attribute("app.result_length", len(results))
+      # handle = results[0]['handle']
+      # span.set_attribute("app.user_id", handle)
+      # span.set_attribute("app.result_length", len(results))
       return results
