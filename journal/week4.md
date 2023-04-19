@@ -53,11 +53,16 @@ We'll make a new `db` folder and file `schema.sql`: `/backend-flask/db/schema.sq
 
 We'll add the extension with the below commands:
 
-```
+```sql
 CREATE EXTENSION "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
+The run it with the following command in the `backend-flask` directory:
+
+```
+psql cruddur < db/schema.sql -h localhost -U postgres
+```
 
 ![Extension creation](../_docs/assets/week4/create-extension.png)
 
@@ -118,7 +123,10 @@ export PROD_CONNECTION_URL="postgresql://<username>:<password>@<RDS endpoint>:54
 gp env PROD_CONNECTION_URL="postgresql://<username>:<password>@<RDS endpoint>:5432/cruddur"
 ```
 
-## Write several bash scripts for database operations
+## Write several bash scripts for database operations 
+
+[Commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/536f463bbfdef30d675f818fabbe83f094294a01)
+
 
 We'll automate repetitive database operations with bash scripts. We'll create a folder `bin` and files `db-create`, `db-drop`, and `db-schema-load`, then make the files executable.
 
@@ -186,6 +194,8 @@ fi
 psql $CON_URL cruddur < $SCHEMA_PATH
 ```
 
+![DB Load Schema](../_docs/assets/week4/schema-update.png)
+
 In the above script we are first saving the absolute path of the file `schema.sql` in the directory `db` relative to the current working directory to the env vars `SCHEMA_PATH`. We will load the schema to the production database if the input is `prod` and to development database if it's not.
 
 ### Create our tables
@@ -218,6 +228,8 @@ CREATE TABLE public.activities (
 );
 ```
 
+### More Scripts
+
 `db-connect`
 
 ```sh
@@ -232,6 +244,8 @@ fi
 
 psql $CON_URL
 ```
+
+![DB Connect](../_docs/assets/week4/db-connect2.png)
 
 `db-seed`
 
@@ -258,6 +272,9 @@ fi
 psql $CON_URL cruddur < $SEED_PATH
 ```
 
+![DB Seed](../_docs/assets/week4/db-seed.png)
+
+
 We'll go ahead and create a file `backend-flask/db/sql/seed.sql` for the seed data. Then proceed to seed the data into our database.
 
 
@@ -276,9 +293,121 @@ VALUES
   )
 ```
 
+We'll create a `db-session` script which is useful for listing the active database sessions. This information can be helpful for database administrators or developers who need to monitor the activity on the database and identify any long-running or problematic sessions.
+
+By running this script, we can see which users are connected to the database, what applications they are using, and what they are doing. We can also see the process ID of each session, which can be useful for troubleshooting or killing a session that is causing issues. 
+
+`db-sessions`
+
+```sh
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="DB Sessions"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+if [ "$1" = "prod" ]; then
+  echo "Running in production mode"
+  CON_URL=$PROD_CONNECTION_URL
+else
+  echo "Running in development mode"
+  CON_URL=$CONNECTION_URL
+fi
 
 
+NO_DB_CON_URL=$(sed 's/\/cruddur//g' <<<"$CON_URL")
+psql $NO_DB_CON_URL -c "select pid as process_id, \
+       usename as user,  \
+       datname as db, \
+       client_addr, \
+       application_name as app,\
+       state \
+from pg_stat_activity;"
+```
+
+![DB Sessions](../_docs/assets/week4/db-sessions.png)
 
 
+To avoid repeatedly having to run these bash commands, we'll create another bash script `db-setup` which will sort of automate the DB drop till seed phases:
+
+```sh
+#! /usr/bin/bash
+-e # stop if it fails at any point
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="DB Setup"
+printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
+
+BIN_PATH="$(realpath .)/bin"
+
+source "$BIN_PATH/db-drop"
+source "$BIN_PATH/db-create"
+source "$BIN_PATH/db-schema-load"
+source "$BIN_PATH/db-seed"
+```
+
+![DB Setup](../_docs/assets/week4/db-setup.png)
 
 
+### Install Postgres Driver
+
+We'll add the following to our `requirements.txt`:
+
+```
+psycopg[binary]
+psycopg[pool]
+```
+
+Then run `pip install -r requirements.txt` afterwards.
+
+
+## DB Object and Connection Pool
+
+[Commit](https://github.com/enyioman/aws-bootcamp-cruddur-2023/commit/37459365d62484849ee561d9de6307b062c88d3a)
+
+We'll set up a connection pool for the PostgreSQL database and define helper functions for generating JSON output from SQL queries. This helps us to manage a pool of database connections for the application to use, rather than creating and tearing down a new connection for each database operation.
+
+`lib/db.py`
+
+```py
+from psycopg_pool import ConnectionPool
+import os
+
+def query_wrap_object(template):
+  sql = f"""
+  (SELECT COALESCE(row_to_json(object_row),'{{}}'::json) FROM (
+  {template}
+  ) object_row);
+  """
+  return sql
+
+def query_wrap_array(template):
+  sql = f"""
+  (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
+  {template}
+  ) array_row);
+  """
+  return sql
+
+connection_url = os.getenv("CONNECTION_URL")
+pool = ConnectionPool(connection_url)
+```
+
+And also pass the connection URLs to our `docker-compose.yml` file.
+
+Then go to `home_activities.py` and add the following:
+
+```py
+from lib.db import pool, query_wrap_array
+
+print(sql)
+      with pool.connection() as conn:
+        with conn.cursor() as cur:
+          cur.execute(sql)
+          # this will return a tuple
+          # the first field being the data
+          json = cur.fetchone()
+      return json[0]
+```
